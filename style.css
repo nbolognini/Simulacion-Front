@@ -1,0 +1,78 @@
+
+.box {
+    flex-direction: column;
+    background-color: rgb(233, 251, 37);
+    border: 1px solid #4B4B4B;
+    display: flex;
+    justify-content: space-between;
+    height: 268px;
+    
+    width: 300px;
+    
+    padding: 1%;
+}
+
+.box-signals {
+    font-family: Arial, sans-serif;
+    font-size: 1.3em;
+
+    background-color: rgb(69, 234, 140);
+    border: 1px solid #4B4B4B;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 25%;
+    width: 99%;
+
+    background-image: url('/media/canal26_icono.jpg');
+    background-size: 70px; /* Muestra la imagen en su tamaño original */
+    background-position: right top; /* Posiciona la imagen en la esquina superior derecha */
+    background-repeat: no-repeat; /* Evita que la imagen se repita OK */
+}
+.box-signals :first-child {
+    margin-left: 5%; /* Asegura que el primer hijo esté a 2px del borde izquierdo */
+    /*  margin-top: 5px; */
+}
+.box-signals > :last-child {
+    margin-right: 5%; /* Asegura que el último hijo esté a 2px del borde derecho */
+    margin-bottom: 5px;
+}
+
+.box-video {
+    background-color: rgb(250, 52, 244);
+    border: 1px solid #4B4B4B;
+    height: 75%;
+    width: 99%;
+    /* Centro el elemento que está dentro */
+    display: flex;
+    justify-content: center;
+    /* dejo la imagen de fondo en el centro */
+    background-size: 100% 100%;
+    background-image: url('/media/canal26.jpg');
+    background-repeat: no-repeat; /* Evita que la imagen se repita OK */
+
+    
+}
+
+.box-down {
+    background-color: rgb(250, 52, 244);
+    border: 1px solid #4B4B4B;
+    height: 20%;
+    width: 99%;
+
+/* Centro el elemento que está dentro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signal-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+.signal-attribute {
+    margin: 5px 0;
+}
