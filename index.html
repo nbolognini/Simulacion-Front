@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <style>
         .container {
             display: flex;
@@ -58,28 +57,60 @@
         }
     </style>
 </head>
+
+
 <body>
     <h1>Prueba renderizado desde los datos</h1>
     <h2>traidos desde BackEnd</h2>
 
-    <div id="Etiqueta-dinamica10" class="container"></div>
+    <div id="renderizado-signals" class="container"></div>
 
     <script>
+
+        // Función asíncrona para solicitar las señales al servidor
         async function solicitarSignals() {
             try {
-                const response = await fetch('http://localhost:3000/signals');
-                const data = await response.json();
-                console.log('Data received:', data);
-                return data;
+                // const respuesta va a aguardar y luego guardar la respuesta de la peticion
+                // los primeros que voy a recibir son los datos tecnicos de la respuesta
+                const respuesta = await fetch('http://localhost:3000/signals');
+                //En signals voy a aguardar la respuesta cuando la variable respuesta se resuelva
+                // y la voy a guardar en formato JSON
+                const signals = await respuesta.json();
+
+                //imprimo en consola los datos recibidos en respuesta (primeros datos técnicos)
+                console.log('Variable entorno con metadata *respuesta*:', respuesta);
+                //imprimo en consola los datos recibidos
+                console.log('Variable entorno con *signals* con la respuesta ya resolvida:', signals);
+
+                //acá voy a guardar en el local storage las señales
+                localStorage.setItem('signalsLS', JSON.stringify(signals));
+                //imprimo en consola los datos guardados en el local storage y lo muestro como objeto
+                console.log('Datos guardados en localStorage (lo paso a objeto puro):', JSON.parse(localStorage.getItem('signalsLS')));
+                //imprimo en consola los datos guardados en el local storage
+                console.log('Datos tal cual en el localStorage (quedan siempre como JSON):', localStorage.getItem('signalsLS'));
+
+                //Cuando retorno signals, las mismas van a ser utilizadas en la función renderizarSignals
+                console.log('Retorno final de solicitarSignals():');
+                return signals;
             } catch (error) {
                 console.error('Error:', error);
             }
         }
 
+        async function obtenerYAlmacenarSignals() {
+            try {
+                const response = await fetch('http://localhost:3000/signals');
+                const signals = await response.json();
+                localStorage.setItem('signals', JSON.stringify(signals));
+            } catch (error) {
+                console.error('Error al obtener las señales:', error);
+            }
+        }
+
         async function obtenerNombreCanal(channelId) {
             try {
-                const response = await fetch(`http://localhost:3000/channelName/${channelId}`);
-                const channelName = await response.json();
+                const respuesta = await fetch(`http://localhost:3000/channelName/${channelId}`);
+                const channelName = await respuesta.json();
                 return channelName;
             } catch (error) {
                 console.error('Error:', error);
@@ -87,32 +118,26 @@
         }
 
         async function renderizarSignals(signalsLS) {
-            const div = document.getElementById('Etiqueta-dinamica10');
+            const div = document.getElementById('renderizado-signals');
             div.innerHTML = ''; // Limpiar contenido previo
-
+            // Verificar si signalsLS es un array y si tiene al menos un elemento
             if (Array.isArray(signalsLS) && signalsLS.length > 0) {
                 for (const signal of signalsLS) {
                     console.log('Signal:', signal); // Imprimir cada objeto signal en la consola
-
                     // Obtener el nombre del canal y reemplazar signal.name
                     const channelName = await obtenerNombreCanal(signal.fk_channel_id);
                     signal.name = channelName;
-
                     const box = document.createElement('div');
                     box.className = 'box';
-
                     const boxSignals = document.createElement('div');
                     boxSignals.className = 'box-signals';
                     boxSignals.innerHTML = `<div>Nombre: ${signal.name} <br>type: ${signal.signal_type}</div> <div></div>`;
                     box.appendChild(boxSignals);
-
                     const boxVideo = document.createElement('div');
                     boxVideo.className = 'box-video';
-                    //aca voy a colocar el video con el reproductor hls
-                    
+                    //aca voy a colocar el video con el reproductor hls     
                     boxVideo.textContent = signal.signal_url;
                     box.appendChild(boxVideo);
-
                     div.appendChild(box);
                 }
             } else {
@@ -120,9 +145,14 @@
             }
         }
 
-        solicitarSignals().then(signalsLS => {
+        // Llamar a la función para obtener y almacenar los datos
+        obtenerYAlmacenarSignals().then(() => {
+        // Obtener los datos almacenados desde LS, lo convierto a objeto y lo guardo en signalsLS
+            const signalsLS = JSON.parse(localStorage.getItem('signals'));
+        // Luego renderizar los datos almacenados, pasando como parametro las señales obtenidas
             renderizarSignals(signalsLS);
         });
+
     </script>
 </body>
 </html>

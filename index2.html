@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .box {
+            flex-direction: column;
+            background-color: rgb(233, 251, 37);
+            border: 1px solid #4B4B4B;
+            display: flex;
+            justify-content: space-between;
+            height: 268px;
+            width: 300px;
+            padding: 1%;
+        }
+        .box-signals {
+            font-family: Arial, sans-serif;
+            font-size: 1.2em;
+            background-color: rgb(69, 234, 140);
+            border: 1px solid #4B4B4B;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 25%;
+            width: 99%;
+            background-image: url('/media/canal26_icono.jpg');
+            background-size: 70px; /* Muestra la imagen en su tamaño original */
+            background-position: right top; /* Posiciona la imagen en la esquina superior derecha */
+            background-repeat: no-repeat; /* Evita que la imagen se repita OK */
+        }
+        .box-signals :first-child {
+            margin-left: 5%; /* Asegura que el primer hijo esté a 2px del borde izquierdo */
+        }
+        .box-signals > :last-child {
+            margin-right: 5%; /* Asegura que el último hijo esté a 2px del borde derecho */
+            margin-bottom: 5px;
+        }
+        .box-video {
+            font-family: Arial, sans-serif;
+            font-size: 0.8em;
+            color: white;
+            background-color: rgb(250, 52, 244);
+            border: 1px solid #4B4B4B;
+            height: 75%;
+            width: 99%;
+            display: flex;
+            justify-content: center;
+            background-size: 100% 100%;
+            background-image: url('/media/canal26.jpg');
+            background-repeat: no-repeat; /* Evita que la imagen se repita OK */
+        }
+    </style>
+    
+    
+    
+    <title>Canales</title>
+</head>
+<body>
+    <div id="canalesContainer"></div>
+
+    <script>
+        async function obtenerYAlmacenarCanales() {
+            try {
+                const response = await fetch('http://localhost:3000/channels');
+                const canales = await response.json();
+                localStorage.setItem('canales', JSON.stringify(canales));
+            } catch (error) {
+                console.error('Error al obtener los canales:', error);
+            }
+        }
+
+        function renderizarCanalesDesdeLocalStorage() {
+            const canales = JSON.parse(localStorage.getItem('canales'));
+            if (canales) {
+                const container = document.getElementById('canalesContainer');
+                canales.forEach(canal => {
+                    const canalDiv = document.createElement('div');
+                    canalDiv.textContent = `ID: ${canal.channel_id}, Nombre: ${canal.channel_name}, URL: ${canal.channel_img}`;
+                    container.appendChild(canalDiv);
+                });
+            } else {
+                console.log('No hay canales almacenados en el localStorage.');
+            }
+        }
+
+        // Llamar a la función para obtener y almacenar los datos
+        obtenerYAlmacenarCanales().then(() => {
+            // Luego renderizar los datos almacenados
+            renderizarCanalesDesdeLocalStorage();
+        });
+    </script>
+</body>
+</html>
